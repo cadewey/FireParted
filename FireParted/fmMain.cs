@@ -256,6 +256,7 @@ namespace FireParted
             {
                 btnBackupData.Enabled = true;
                 btnReadPartitions.Enabled = true;
+                btnResetValues.Enabled = true;
             }
         }
 
@@ -271,6 +272,7 @@ namespace FireParted
             {
                 btnBackupData.Enabled = false;
                 btnReadPartitions.Enabled = false;
+                btnResetValues.Enabled = false;
             }
         }
 
@@ -360,6 +362,19 @@ namespace FireParted
         {
             //Try to clean up leftover adb process(es), if any
             AdbCommand.KillAdbServer();
+        }
+
+        private void btnResetValues_Click(object sender, EventArgs e)
+        {
+            _dataSize = _origDataSize;
+            _cacheSize = _origCacheSize;
+            _sdcardSize = _origSdcardSize;
+
+            numData.Value = _dataSize;
+            numCache.Value = _cacheSize;
+            numSdcard.Value = _sdcardSize;
+
+            UpdateDisplay();
         }
     }
 }

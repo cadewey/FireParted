@@ -65,6 +65,7 @@ namespace FireParted
             this.progSdUsage = new System.Windows.Forms.ProgressBar();
             this.lblSdUsage = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.btnResetValues = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSdcard)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCache)).BeginInit();
@@ -74,7 +75,7 @@ namespace FireParted
             // 
             this.rtbConsole.BackColor = System.Drawing.Color.White;
             this.rtbConsole.Font = new System.Drawing.Font("DejaVu Sans Mono", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbConsole.Location = new System.Drawing.Point(193, 12);
+            this.rtbConsole.Location = new System.Drawing.Point(214, 11);
             this.rtbConsole.Name = "rtbConsole";
             this.rtbConsole.ReadOnly = true;
             this.rtbConsole.Size = new System.Drawing.Size(609, 328);
@@ -185,17 +186,17 @@ namespace FireParted
             // 
             // lblSpaceTitle
             // 
-            this.lblSpaceTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSpaceTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSpaceTitle.Location = new System.Drawing.Point(4, 267);
             this.lblSpaceTitle.Name = "lblSpaceTitle";
-            this.lblSpaceTitle.Size = new System.Drawing.Size(119, 20);
+            this.lblSpaceTitle.Size = new System.Drawing.Size(142, 20);
             this.lblSpaceTitle.TabIndex = 10;
-            this.lblSpaceTitle.Text = "Availabile Space:";
+            this.lblSpaceTitle.Text = "Unallocated Space:";
             // 
             // lblAvailSpace
             // 
-            this.lblAvailSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAvailSpace.Location = new System.Drawing.Point(118, 267);
+            this.lblAvailSpace.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAvailSpace.Location = new System.Drawing.Point(139, 267);
             this.lblAvailSpace.Name = "lblAvailSpace";
             this.lblAvailSpace.Size = new System.Drawing.Size(69, 20);
             this.lblAvailSpace.TabIndex = 11;
@@ -213,9 +214,9 @@ namespace FireParted
             // 
             // btnBackupData
             // 
-            this.btnBackupData.Location = new System.Drawing.Point(622, 437);
+            this.btnBackupData.Location = new System.Drawing.Point(637, 437);
             this.btnBackupData.Name = "btnBackupData";
-            this.btnBackupData.Size = new System.Drawing.Size(180, 32);
+            this.btnBackupData.Size = new System.Drawing.Size(186, 32);
             this.btnBackupData.TabIndex = 13;
             this.btnBackupData.Text = "Archive /data Partition";
             this.btnBackupData.UseVisualStyleBackColor = true;
@@ -224,7 +225,7 @@ namespace FireParted
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(190, 351);
+            this.label4.Location = new System.Drawing.Point(211, 351);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(86, 19);
             this.label4.TabIndex = 14;
@@ -234,7 +235,7 @@ namespace FireParted
             // lblDataUsage
             // 
             this.lblDataUsage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDataUsage.Location = new System.Drawing.Point(272, 351);
+            this.lblDataUsage.Location = new System.Drawing.Point(293, 351);
             this.lblDataUsage.Name = "lblDataUsage";
             this.lblDataUsage.Size = new System.Drawing.Size(114, 19);
             this.lblDataUsage.TabIndex = 15;
@@ -245,26 +246,26 @@ namespace FireParted
             // 
             this.progDataUsage.BackColor = System.Drawing.Color.White;
             this.progDataUsage.ForeColor = System.Drawing.Color.LimeGreen;
-            this.progDataUsage.Location = new System.Drawing.Point(392, 347);
+            this.progDataUsage.Location = new System.Drawing.Point(425, 347);
             this.progDataUsage.MarqueeAnimationSpeed = 99999;
             this.progDataUsage.Name = "progDataUsage";
-            this.progDataUsage.Size = new System.Drawing.Size(410, 23);
+            this.progDataUsage.Size = new System.Drawing.Size(398, 23);
             this.progDataUsage.TabIndex = 16;
             // 
             // progSdUsage
             // 
             this.progSdUsage.BackColor = System.Drawing.Color.White;
             this.progSdUsage.ForeColor = System.Drawing.Color.LimeGreen;
-            this.progSdUsage.Location = new System.Drawing.Point(392, 376);
+            this.progSdUsage.Location = new System.Drawing.Point(425, 376);
             this.progSdUsage.MarqueeAnimationSpeed = 99999;
             this.progSdUsage.Name = "progSdUsage";
-            this.progSdUsage.Size = new System.Drawing.Size(410, 23);
+            this.progSdUsage.Size = new System.Drawing.Size(398, 23);
             this.progSdUsage.TabIndex = 19;
             // 
             // lblSdUsage
             // 
             this.lblSdUsage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSdUsage.Location = new System.Drawing.Point(272, 380);
+            this.lblSdUsage.Location = new System.Drawing.Point(293, 380);
             this.lblSdUsage.Name = "lblSdUsage";
             this.lblSdUsage.Size = new System.Drawing.Size(114, 19);
             this.lblSdUsage.TabIndex = 18;
@@ -274,18 +275,29 @@ namespace FireParted
             // label6
             // 
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(190, 380);
+            this.label6.Location = new System.Drawing.Point(211, 380);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(86, 19);
             this.label6.TabIndex = 17;
             this.label6.Text = "SD Usage:";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // btnResetValues
+            // 
+            this.btnResetValues.Location = new System.Drawing.Point(7, 309);
+            this.btnResetValues.Name = "btnResetValues";
+            this.btnResetValues.Size = new System.Drawing.Size(180, 30);
+            this.btnResetValues.TabIndex = 20;
+            this.btnResetValues.Text = "Reset Values";
+            this.btnResetValues.UseVisualStyleBackColor = true;
+            this.btnResetValues.Click += new System.EventHandler(this.btnResetValues_Click);
+            // 
             // fmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 481);
+            this.ClientSize = new System.Drawing.Size(833, 481);
+            this.Controls.Add(this.btnResetValues);
             this.Controls.Add(this.progSdUsage);
             this.Controls.Add(this.lblSdUsage);
             this.Controls.Add(this.label6);
@@ -338,6 +350,7 @@ namespace FireParted
         private System.Windows.Forms.ProgressBar progSdUsage;
         private System.Windows.Forms.Label lblSdUsage;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnResetValues;
     }
 }
 
