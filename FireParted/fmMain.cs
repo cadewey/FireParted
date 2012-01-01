@@ -45,6 +45,8 @@ namespace FireParted
         private int _dataUsed;
         private int _sdcardUsed;
 
+        private bool _partitionTableRead = false;
+
         //Establish a minimum /cache size to be safe
         private readonly int _minCache = 64;
 
@@ -142,6 +144,7 @@ namespace FireParted
 
             WriteToConsole("Done!\n");
 
+            _partitionTableRead = true;
             EnableButtons();
         }
 
@@ -246,9 +249,9 @@ namespace FireParted
 
         private void EnableButtons()
         {
-            if (rtbConsole.InvokeRequired)
+            if (btnBackupData.InvokeRequired)
             {
-                rtbConsole.Invoke(new Action(
+                btnBackupData.Invoke(new Action(
                     delegate() { EnableButtons(); }
                 ));
             }
@@ -256,15 +259,20 @@ namespace FireParted
             {
                 btnBackupData.Enabled = true;
                 btnReadPartitions.Enabled = true;
-                btnResetValues.Enabled = true;
+
+                if (_partitionTableRead)
+                {
+                    btnResetValues.Enabled = true;
+                    btnApplyChanges.Enabled = true;
+                }   
             }
         }
 
         private void DisableButtons()
         {
-            if (rtbConsole.InvokeRequired)
+            if (btnBackupData.InvokeRequired)
             {
-                rtbConsole.Invoke(new Action(
+                btnBackupData.Invoke(new Action(
                     delegate() { DisableButtons(); }
                 ));
             }
@@ -273,6 +281,7 @@ namespace FireParted
                 btnBackupData.Enabled = false;
                 btnReadPartitions.Enabled = false;
                 btnResetValues.Enabled = false;
+                btnApplyChanges.Enabled = false;
             }
         }
 
@@ -308,6 +317,20 @@ namespace FireParted
             }
 
             UpdateDisplay();
+        }
+
+        private Dictionary<string, int> CalculateBeginEndValues()
+        {
+            Dictionary<string, int> values = new Dictionary<string, int>();
+
+            values.Add("databegin", 849);
+            values.Add("dataend", 849 + (int)_dataSize);
+            values.Add("cachebegin", values["dataend"]);
+            values.Add("cacheend", values["cachebegin"] + (int)_cacheSize);
+            values.Add("mediabegin", values["cacheend"]);
+            values.Add("mediaend", values["mediabegin"] + (int)_sdcardSize);
+
+            return values;
         }
 
         private void btnBackupData_Click(object sender, EventArgs e)
@@ -375,6 +398,34 @@ namespace FireParted
             numSdcard.Value = _sdcardSize;
 
             UpdateDisplay();
+        }
+
+        private void btnApplyChanges_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("This will apply your partition changes to the device. Be aware that this WILL erase " +
+                "your data partition and may also result in data loss from your sdcard partition. " +
+                "Please make sure you have backed up anything you don't want to lose!\n\n" +
+                "Apply changes?", "Warning! Data Will Be Erased!", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
+            {
+                DisableButtons();
+
+                Dictionary<string, int> beginEndValues = CalculateBeginEndValues();
+
+                try
+                {
+                    _command.RepartitionCache(beginEndValues["cachebegin"], beginEndValues["cacheend"]);
+                }
+                catch (PartitionException pEx)
+                {
+                    WriteToConsole(pEx.Message.Replace("\r", "\n"));
+                }
+                finally
+                {
+                    EnableButtons();
+                }
+            }
         }
     }
 }

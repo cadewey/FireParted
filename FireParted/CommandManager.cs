@@ -83,6 +83,25 @@ namespace FireParted
             return AdbCommand.ExecuteCommand(Constants.PULL_DATA_ARCHIVE);
         }
 
+        public void RepartitionCache(int begin, int end)
+        {
+            _parent.WriteToConsole("Repartitioning /cache (begin=" + begin + ", end=" + end + ")...\n");
+
+            AdbCommand.ExecuteShellCommand(Constants.UMOUNT_CACHE);
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_REMOVE + Constants.CACHE_PART_NUMBER, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_MAKE_EXTFS + begin + " " + end, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_NAME + Constants.CACHE_PART_NUMBER + " cache", _parent);
+            
+            _parent.WriteToConsole("Running e2fsck and tune2fs...\n");
+
+            AdbCommand.ExecutePartitionCommand(Constants.TUNE2FS_EXT3 + Constants.CACHE_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.E2FSCK + Constants.CACHE_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.TUNE2FS_EXT4 + Constants.CACHE_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.E2FSCK + Constants.CACHE_DEVICE, _parent);
+
+            _parent.WriteToConsole("\nDone! Parition table successfully written to device.\n");
+        }
+
         private void ProcessPartitionTable(string PartInfo, Dictionary<string, uint> PartTable)
         {
             Match dataMatch = Constants.DATA_REGEX.Match(PartInfo);

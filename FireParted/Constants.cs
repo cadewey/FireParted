@@ -35,12 +35,15 @@ namespace FireParted
 
         public static readonly string DATA_NAME = "userdata";
         public static readonly string DATA_DEVICE = "/dev/block/mmcblk0p10";
+        public static readonly string DATA_PART_NUMBER = "10";
 
         public static readonly string SDCARD_NAME = "media";
         public static readonly string SDCARD_DEVICE = "/dev/block/mmcblk0p12";
+        public static readonly string SDCARD_PART_NUMBER = "12";
 
         public static readonly string CACHE_NAME = "cache";
         public static readonly string CACHE_DEVICE = "/dev/block/mmcblk0p11";
+        public static readonly string CACHE_PART_NUMBER = "11";
 
         //du commands
         public static readonly string USED_SDCARD = "du -csm /sdcard/";
@@ -49,23 +52,23 @@ namespace FireParted
         //Mount/umunt commands
         public static readonly string MOUNT_DATA = "mount " + DATA_DEVICE + " /data";
         public static readonly string MOUNT_SDCARD = "mount " + SDCARD_DEVICE + " /sdcard";
-        public static readonly string UMOUNT_DATA = "umount -t ext4 /data";
-        public static readonly string UMOUNT_SDCARD = "umount -t vfat /sdcard";
-        public static readonly string UMOUNT_CACHE = "umount -t ext4 /cache";
+        public static readonly string UMOUNT_DATA = "umount /data";
+        public static readonly string UMOUNT_SDCARD = "umount /sdcard";
+        public static readonly string UMOUNT_CACHE = "umount /cache";
 
         //Various parted commands
         public static readonly string PARTED_PRINT = "parted " + DEVICE_BLOCK_ROOT + " print";
-        public static readonly string PARTED_RESIZE = "parted " + DEVICE_BLOCK_ROOT + " resize";
-        public static readonly string PARTED_MAKE_FS = "parted " + DEVICE_BLOCK_ROOT + " mkpartfs";
-        public static readonly string PARTED_NAME = "parted " + DEVICE_BLOCK_ROOT + " name";
-        public static readonly string PARTED_REMOVE = "parted " + DEVICE_BLOCK_ROOT + " rm";
+        public static readonly string PARTED_RESIZE = "parted " + DEVICE_BLOCK_ROOT + " resize ";
+        public static readonly string PARTED_MAKE_EXTFS = "parted " + DEVICE_BLOCK_ROOT + " mkpartfs primary ext2 ";
+        public static readonly string PARTED_NAME = "parted " + DEVICE_BLOCK_ROOT + " name ";
+        public static readonly string PARTED_REMOVE = "parted " + DEVICE_BLOCK_ROOT + " rm ";
 
-        //e2fsck command (without the -p flag; we'll always run manually)
-        public static readonly string E2FSCK = "e2fsck -fD";
+        //e2fsck command (-y flag assumes "yes" to all questions)
+        public static readonly string E2FSCK = "e2fsck -fDy ";
 
         //tune2fs commands
-        public static readonly string TUNE2FS_EXT3 = "tune2fs -j";
-        public static readonly string TUNE2FS_EXT4 = "tune2fs -O extents,uninit_bg,dir_index";
+        public static readonly string TUNE2FS_EXT3 = "tune2fs -j ";
+        public static readonly string TUNE2FS_EXT4 = "tune2fs -O extents,uninit_bg,dir_index ";
 
         //tar commands
         public static readonly string TAR_CREATE = "tar -cvpzf /sdcard/data.tgz -C /data .";

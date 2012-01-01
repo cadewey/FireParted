@@ -66,6 +66,7 @@ namespace FireParted
             this.lblSdUsage = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.btnResetValues = new System.Windows.Forms.Button();
+            this.btnApplyChanges = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSdcard)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCache)).BeginInit();
@@ -292,11 +293,22 @@ namespace FireParted
             this.btnResetValues.UseVisualStyleBackColor = true;
             this.btnResetValues.Click += new System.EventHandler(this.btnResetValues_Click);
             // 
+            // btnApplyChanges
+            // 
+            this.btnApplyChanges.Location = new System.Drawing.Point(205, 437);
+            this.btnApplyChanges.Name = "btnApplyChanges";
+            this.btnApplyChanges.Size = new System.Drawing.Size(180, 32);
+            this.btnApplyChanges.TabIndex = 21;
+            this.btnApplyChanges.Text = "Apply Changes";
+            this.btnApplyChanges.UseVisualStyleBackColor = true;
+            this.btnApplyChanges.Click += new System.EventHandler(this.btnApplyChanges_Click);
+            // 
             // fmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(833, 481);
+            this.Controls.Add(this.btnApplyChanges);
             this.Controls.Add(this.btnResetValues);
             this.Controls.Add(this.progSdUsage);
             this.Controls.Add(this.lblSdUsage);
@@ -351,6 +363,7 @@ namespace FireParted
         private System.Windows.Forms.Label lblSdUsage;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnResetValues;
+        private System.Windows.Forms.Button btnApplyChanges;
     }
 }
 

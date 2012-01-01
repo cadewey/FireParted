@@ -39,16 +39,7 @@ namespace FireParted
         {
             KillAdbServer();
             
-            Process proc = null;
-
-            ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", "start-server");
-            info.RedirectStandardError = true;
-            info.RedirectStandardOutput = true;
-            info.CreateNoWindow = true;
-            info.UseShellExecute = false;
-
-            proc = Process.Start(info);
-
+            Process proc = Process.Start(CreateAdbStartInfo("start-server"));
             proc.WaitForExit();
 
             return null;
@@ -58,13 +49,7 @@ namespace FireParted
         {
             string output;
 
-            ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", "shell " + Command);
-            info.RedirectStandardError = true;
-            info.RedirectStandardOutput = true;
-            info.CreateNoWindow = true;
-            info.UseShellExecute = false;
-
-            Process proc = Process.Start(info);
+            Process proc = Process.Start(CreateAdbStartInfo("shell " + Command));
             proc.WaitForExit();
 
             string stdErr = proc.StandardError.ReadToEnd();
@@ -74,17 +59,31 @@ namespace FireParted
             return output;
         }
 
+        public static void ExecutePartitionCommand(string Command, fmMain console)
+        {
+            string output = null;
+
+            Process proc = Process.Start(CreateAdbStartInfo("shell " + Command));
+            proc.WaitForExit();
+
+            string stdErr = proc.StandardError.ReadToEnd();
+
+            if (!String.IsNullOrEmpty(stdErr))
+            {
+                throw new PartitionException(stdErr);
+            }
+
+            output = proc.StandardOutput.ReadToEnd();
+
+            if (!String.IsNullOrEmpty(output))
+                console.WriteToConsole(output.Replace("\r", ""));
+        }
+
         public static string ExecuteCommand(string Command)
         {
             string output;
 
-            ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", Command);
-            info.RedirectStandardError = true;
-            info.RedirectStandardOutput = true;
-            info.CreateNoWindow = true;
-            info.UseShellExecute = false;
-
-            Process proc = Process.Start(info);
+            Process proc = Process.Start(CreateAdbStartInfo(Command));
             proc.WaitForExit();
 
             string stdErr = proc.StandardError.ReadToEnd();
@@ -99,11 +98,7 @@ namespace FireParted
             string output;
             _console = Console;
 
-            ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", "shell " + Command);
-            info.RedirectStandardError = true;
-            info.RedirectStandardOutput = true;
-            info.CreateNoWindow = true;
-            info.UseShellExecute = false;
+            ProcessStartInfo info = CreateAdbStartInfo("shell " + Command);
 
             Process proc = new Process();
             proc.StartInfo = info;
@@ -119,6 +114,16 @@ namespace FireParted
             output = !String.IsNullOrEmpty(stdErr) ? "Error: " + stdErr : "";
 
             return output;
+        }
+        private static ProcessStartInfo CreateAdbStartInfo(string Command)
+        {
+            ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", Command);
+            info.RedirectStandardError = true;
+            info.RedirectStandardOutput = true;
+            info.CreateNoWindow = true;
+            info.UseShellExecute = false;
+
+            return info;
         }
 
         public static void KillAdbServer()
