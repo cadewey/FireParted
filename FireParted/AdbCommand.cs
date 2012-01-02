@@ -45,6 +45,12 @@ namespace FireParted
             return null;
         }
 
+        public static void Reboot()
+        {
+            Process proc = Process.Start(CreateAdbStartInfo("reboot"));
+            proc.WaitForExit();
+        }
+
         public static string ExecuteShellCommand(string Command)
         {
             string output;

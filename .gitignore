@@ -1,2 +1,4 @@
 FireParted/bin/*
 FireParted/obj/*
+*.suo
+*.user

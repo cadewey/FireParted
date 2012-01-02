@@ -163,7 +163,7 @@ namespace FireParted
             else
             {
                 WriteToConsole("Done!\n");
-                WriteToConsole("Pulling archive from device...\n");
+                WriteToConsole("Pulling archive from device. Please wait, this can take several minutes...\n");
 
                 string pullOutput = _command.PullDataArchive();
 
@@ -186,6 +186,43 @@ namespace FireParted
                     WriteToConsole(pullOutput);
                     WriteToConsole("Done!\n");
                 }
+            }
+
+            EnableButtons();
+        }
+
+        private void RestoreData()
+        {
+            DisableButtons();
+
+            WriteToConsole("Restoring /data from backup archive...\n");
+            WriteToConsole("Pushing archive to device. Please wait, this can take several minutes...\n");
+
+            string pushOutput = _command.PushDataArchive();
+
+            if (pushOutput.Contains("KB/s"))
+            {
+                WriteToConsole(pushOutput.Substring(7) + "\n");
+                WriteToConsole("Extracting archive...\n");
+
+                pushOutput = _command.ExtractDataArchive();
+
+                if (!pushOutput.StartsWith("Error:"))
+                {
+                    WriteToConsole("Cleaning up...\n");
+                    AdbCommand.ExecuteShellCommand("rm /data/data.tgz");
+                    WriteToConsole("Done.\n");
+                }
+                else
+                {
+                    WriteToConsole("Error extracting archive.\n");
+                    WriteToConsole(pushOutput);
+                }
+            }
+            else
+            {
+                WriteToConsole("Error pushing archive to device.\n");
+                WriteToConsole(pushOutput);
             }
 
             EnableButtons();
@@ -259,6 +296,10 @@ namespace FireParted
             {
                 btnBackupData.Enabled = true;
                 btnReadPartitions.Enabled = true;
+                btnReboot.Enabled = true;
+
+                if (File.Exists(@".\data.tgz"))
+                    btnRestoreData.Enabled = true;
 
                 if (_partitionTableRead)
                 {
@@ -282,6 +323,8 @@ namespace FireParted
                 btnReadPartitions.Enabled = false;
                 btnResetValues.Enabled = false;
                 btnApplyChanges.Enabled = false;
+                btnRestoreData.Enabled = false;
+                btnReboot.Enabled = false;
             }
         }
 
@@ -317,6 +360,35 @@ namespace FireParted
             }
 
             UpdateDisplay();
+        }
+
+        private void RepartitionDevice()
+        {
+            DisableButtons();
+
+            try
+            {
+                Dictionary<string, int> beginEndValues = CalculateBeginEndValues();
+
+                WriteToConsole("Writing new partition table to device, please don't power down or unplug your Kindle.\n");
+
+                _command.RepartitionPreparation();
+                _command.ResizeSdcard(beginEndValues["mediabegin"], beginEndValues["mediaend"]);
+                _command.RepartitionData(beginEndValues["databegin"], beginEndValues["dataend"]);
+                _command.RepartitionCache(beginEndValues["cachebegin"], beginEndValues["cacheend"]);
+
+                WriteToConsole("\nDone! Parition table successfully written to device.\n");
+                WriteToConsole("Don't forget to restore your /data partition if you made a backup!\n");
+            }
+            catch (PartitionException pEx)
+            {
+                WriteToConsole(pEx.Message.Replace("\r", "\n"));
+                WriteToConsole("**Please check your partition table before rebooting!**\n");
+            }
+            finally
+            {
+                EnableButtons();
+            }
         }
 
         private Dictionary<string, int> CalculateBeginEndValues()
@@ -409,22 +481,29 @@ namespace FireParted
 
             if (result == DialogResult.Yes)
             {
+                Thread t = new Thread(new ThreadStart(RepartitionDevice));
+                t.Start();
+            }
+        }
+
+        private void btnRestoreData_Click(object sender, EventArgs e)
+        {
+            Thread t = new Thread(new ThreadStart(RestoreData));
+            t.Start();
+        }
+
+        private void btnReboot_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Reboot device now?", "Reboot", MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.Yes)
+            {
+                WriteToConsole("Rebooting device...");
+
+                _partitionTableRead = false;
                 DisableButtons();
-
-                Dictionary<string, int> beginEndValues = CalculateBeginEndValues();
-
-                try
-                {
-                    _command.RepartitionCache(beginEndValues["cachebegin"], beginEndValues["cacheend"]);
-                }
-                catch (PartitionException pEx)
-                {
-                    WriteToConsole(pEx.Message.Replace("\r", "\n"));
-                }
-                finally
-                {
-                    EnableButtons();
-                }
+                AdbCommand.Reboot();
+                EnableButtons();
             }
         }
     }

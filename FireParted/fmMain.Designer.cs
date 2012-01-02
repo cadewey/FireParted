@@ -67,6 +67,8 @@ namespace FireParted
             this.label6 = new System.Windows.Forms.Label();
             this.btnResetValues = new System.Windows.Forms.Button();
             this.btnApplyChanges = new System.Windows.Forms.Button();
+            this.btnRestoreData = new System.Windows.Forms.Button();
+            this.btnReboot = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSdcard)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCache)).BeginInit();
@@ -207,7 +209,7 @@ namespace FireParted
             // 
             this.btnReadPartitions.Location = new System.Drawing.Point(7, 437);
             this.btnReadPartitions.Name = "btnReadPartitions";
-            this.btnReadPartitions.Size = new System.Drawing.Size(180, 32);
+            this.btnReadPartitions.Size = new System.Drawing.Size(139, 32);
             this.btnReadPartitions.TabIndex = 12;
             this.btnReadPartitions.Text = "Read Partition Table";
             this.btnReadPartitions.UseVisualStyleBackColor = true;
@@ -215,9 +217,9 @@ namespace FireParted
             // 
             // btnBackupData
             // 
-            this.btnBackupData.Location = new System.Drawing.Point(637, 437);
+            this.btnBackupData.Location = new System.Drawing.Point(503, 437);
             this.btnBackupData.Name = "btnBackupData";
-            this.btnBackupData.Size = new System.Drawing.Size(186, 32);
+            this.btnBackupData.Size = new System.Drawing.Size(156, 32);
             this.btnBackupData.TabIndex = 13;
             this.btnBackupData.Text = "Archive /data Partition";
             this.btnBackupData.UseVisualStyleBackColor = true;
@@ -295,19 +297,41 @@ namespace FireParted
             // 
             // btnApplyChanges
             // 
-            this.btnApplyChanges.Location = new System.Drawing.Point(205, 437);
+            this.btnApplyChanges.Location = new System.Drawing.Point(152, 437);
             this.btnApplyChanges.Name = "btnApplyChanges";
-            this.btnApplyChanges.Size = new System.Drawing.Size(180, 32);
+            this.btnApplyChanges.Size = new System.Drawing.Size(139, 32);
             this.btnApplyChanges.TabIndex = 21;
             this.btnApplyChanges.Text = "Apply Changes";
             this.btnApplyChanges.UseVisualStyleBackColor = true;
             this.btnApplyChanges.Click += new System.EventHandler(this.btnApplyChanges_Click);
+            // 
+            // btnRestoreData
+            // 
+            this.btnRestoreData.Location = new System.Drawing.Point(665, 437);
+            this.btnRestoreData.Name = "btnRestoreData";
+            this.btnRestoreData.Size = new System.Drawing.Size(156, 32);
+            this.btnRestoreData.TabIndex = 22;
+            this.btnRestoreData.Text = "Restore /data From Backup";
+            this.btnRestoreData.UseVisualStyleBackColor = true;
+            this.btnRestoreData.Click += new System.EventHandler(this.btnRestoreData_Click);
+            // 
+            // btnReboot
+            // 
+            this.btnReboot.Location = new System.Drawing.Point(297, 437);
+            this.btnReboot.Name = "btnReboot";
+            this.btnReboot.Size = new System.Drawing.Size(139, 32);
+            this.btnReboot.TabIndex = 23;
+            this.btnReboot.Text = "Reboot Device";
+            this.btnReboot.UseVisualStyleBackColor = true;
+            this.btnReboot.Click += new System.EventHandler(this.btnReboot_Click);
             // 
             // fmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(833, 481);
+            this.Controls.Add(this.btnReboot);
+            this.Controls.Add(this.btnRestoreData);
             this.Controls.Add(this.btnApplyChanges);
             this.Controls.Add(this.btnResetValues);
             this.Controls.Add(this.progSdUsage);
@@ -364,6 +388,8 @@ namespace FireParted
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnResetValues;
         private System.Windows.Forms.Button btnApplyChanges;
+        private System.Windows.Forms.Button btnRestoreData;
+        private System.Windows.Forms.Button btnReboot;
     }
 }
 

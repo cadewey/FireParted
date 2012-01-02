@@ -73,8 +73,8 @@ namespace FireParted
         public string ArchiveDataPartition()
         {
             //Try to mount /data and /sdcard, the result is pretty much irrelevant since tar will error out if need be
-            _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_DATA).Replace("\r", "\n") + "\n");
-            _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_SDCARD).Replace("\r", "\n") + "\n");
+            _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_DATA).Replace("\r", "") + "\n");
+            _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_SDCARD).Replace("\r", "") + "\n");
             return AdbCommand.ExecuteShellCommandWithOutput(Constants.TAR_CREATE, _parent);
         }
 
@@ -83,12 +83,60 @@ namespace FireParted
             return AdbCommand.ExecuteCommand(Constants.PULL_DATA_ARCHIVE);
         }
 
+        public string PushDataArchive()
+        {
+            _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_DATA).Replace("\r", "") + "\n");
+            return AdbCommand.ExecuteCommand(Constants.PUSH_DATA_ARCHIVE);
+        }
+
+        public string ExtractDataArchive()
+        {
+            return AdbCommand.ExecuteShellCommandWithOutput(Constants.TAR_EXTRACT, _parent);
+        }
+
+        public void RepartitionPreparation()
+        {
+            //Unmount the data, cache, and sdcard partitions since we can't modify them
+            //if they're mounted.
+            AdbCommand.ExecuteShellCommand(Constants.UMOUNT_CACHE);
+            AdbCommand.ExecuteShellCommand(Constants.UMOUNT_DATA);
+            AdbCommand.ExecuteShellCommand(Constants.UMOUNT_SDCARD);
+
+            //Remove the data and cache partitions up front
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_REMOVE + Constants.CACHE_PART_NUMBER, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_REMOVE + Constants.DATA_PART_NUMBER, _parent);
+        }
+
+        public void ResizeSdcard(int begin, int end)
+        {
+            _parent.WriteToConsole("Resizing /sdcard partition (begin=" + begin + ", end=" + end + ")...\n");
+
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_RESIZE + Constants.SDCARD_PART_NUMBER + " " + begin + " " + end, _parent);
+
+            _parent.WriteToConsole("Sdcard resized successfully.\n\n");
+        }
+
+        public void RepartitionData(int begin, int end)
+        {
+            _parent.WriteToConsole("Repartitioning /data (begin=" + begin + ", end=" + end + ")...\n");
+
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_MAKE_EXTFS + begin + " " + end, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.PARTED_NAME + Constants.DATA_PART_NUMBER + " userdata", _parent);
+
+            _parent.WriteToConsole("Running e2fsck and tune2fs...\n");
+
+            AdbCommand.ExecutePartitionCommand(Constants.TUNE2FS_EXT3 + Constants.DATA_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.E2FSCK + Constants.DATA_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.TUNE2FS_EXT4 + Constants.DATA_DEVICE, _parent);
+            AdbCommand.ExecutePartitionCommand(Constants.E2FSCK + Constants.DATA_DEVICE, _parent);
+
+            _parent.WriteToConsole("Data repartitioning complete.\n\n");
+        }
+
         public void RepartitionCache(int begin, int end)
         {
             _parent.WriteToConsole("Repartitioning /cache (begin=" + begin + ", end=" + end + ")...\n");
 
-            AdbCommand.ExecuteShellCommand(Constants.UMOUNT_CACHE);
-            AdbCommand.ExecutePartitionCommand(Constants.PARTED_REMOVE + Constants.CACHE_PART_NUMBER, _parent);
             AdbCommand.ExecutePartitionCommand(Constants.PARTED_MAKE_EXTFS + begin + " " + end, _parent);
             AdbCommand.ExecutePartitionCommand(Constants.PARTED_NAME + Constants.CACHE_PART_NUMBER + " cache", _parent);
             
@@ -99,7 +147,7 @@ namespace FireParted
             AdbCommand.ExecutePartitionCommand(Constants.TUNE2FS_EXT4 + Constants.CACHE_DEVICE, _parent);
             AdbCommand.ExecutePartitionCommand(Constants.E2FSCK + Constants.CACHE_DEVICE, _parent);
 
-            _parent.WriteToConsole("\nDone! Parition table successfully written to device.\n");
+            _parent.WriteToConsole("Cache repartitioning complete.\n\n");
         }
 
         private void ProcessPartitionTable(string PartInfo, Dictionary<string, uint> PartTable)

@@ -72,10 +72,11 @@ namespace FireParted
 
         //tar commands
         public static readonly string TAR_CREATE = "tar -cvpzf /sdcard/data.tgz -C /data .";
-        public static readonly string TAR_EXTRACT = "tar -xvzpf data.tgz";
+        public static readonly string TAR_EXTRACT = "tar -xvpzf /data/data.tgz -C /data";
 
         //Pull command for getting archive file
         public static readonly string PULL_DATA_ARCHIVE = "pull /sdcard/data.tgz";
+        public static readonly string PUSH_DATA_ARCHIVE = "push data.tgz /data";
 
         //Regular expressions for parsing parted's print command
         public static Regex DATA_REGEX = new Regex(@"10\s+\d+MB\s+\d+MB\s+(\d+)MB(?:\s|\w)+?userdata");
