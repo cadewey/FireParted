@@ -55,11 +55,20 @@
     <Compile Include="fmMain.Designer.cs">
       <DependentUpon>fmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="fmWarningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fmWarningDialog.Designer.cs">
+      <DependentUpon>fmWarningDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="PartitionException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="fmMain.resx">
       <DependentUpon>fmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fmWarningDialog.resx">
+      <DependentUpon>fmWarningDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

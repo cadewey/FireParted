@@ -34,6 +34,12 @@ namespace FireParted
             _parent = Parent;
         }
 
+        /// <summary>
+        /// Reads the current partition table's values.
+        /// </summary>
+        /// <returns>
+        /// A dictionary that maps partition names to their sizes.
+        /// </returns>
         public Dictionary<string, uint> ReadPartitionTable()
         {
             Dictionary<string, uint> partTable = new Dictionary<string, uint>();
@@ -49,6 +55,12 @@ namespace FireParted
             return partTable;
         }
 
+        /// <summary>
+        /// Reads the current usage of each partition.
+        /// </summary>
+        /// <returns>
+        /// A dictionary that maps partition names to their usage.
+        /// </returns>
         public Dictionary<string, int> ReadPartitionUsage()
         {
             Dictionary<string, int> partUsage = new Dictionary<string, int>();
@@ -70,6 +82,12 @@ namespace FireParted
             return partUsage;
         }
 
+        /// <summary>
+        /// Creates an archive of the /data partition
+        /// </summary>
+        /// <returns>
+        /// The output of the archive command.
+        /// </returns>
         public string ArchiveDataPartition()
         {
             //Try to mount /data and /sdcard, the result is pretty much irrelevant since tar will error out if need be
@@ -78,22 +96,44 @@ namespace FireParted
             return AdbCommand.ExecuteShellCommandWithOutput(Constants.TAR_CREATE, _parent);
         }
 
+        /// <summary>
+        /// Pulls the data.tgz archive from the device.
+        /// </summary>
+        /// <returns>
+        /// he output of the pull command.
+        /// </returns>
         public string PullDataArchive()
         {
             return AdbCommand.ExecuteCommand(Constants.PULL_DATA_ARCHIVE);
         }
 
+        /// <summary>
+        /// Pushes a data.tgz archive from the local machine to the device.
+        /// </summary>
+        /// <returns>
+        /// The output of the push command.
+        /// </returns>
         public string PushDataArchive()
         {
             _parent.WriteToConsole(AdbCommand.ExecuteShellCommand(Constants.MOUNT_DATA).Replace("\r", "") + "\n");
             return AdbCommand.ExecuteCommand(Constants.PUSH_DATA_ARCHIVE);
         }
 
+        /// <summary>
+        /// Extracts a data archive on the remote device, effectively restoring the /data partition.
+        /// </summary>
+        /// <returns>
+        /// The output of the extract command.
+        /// </returns>
         public string ExtractDataArchive()
         {
             return AdbCommand.ExecuteShellCommandWithOutput(Constants.TAR_EXTRACT, _parent);
         }
 
+        /// <summary>
+        /// Preps the device for repartitioning by unmounting all partitions and deleting the cache
+        /// and data partitions.
+        /// </summary>
         public void RepartitionPreparation()
         {
             //Unmount the data, cache, and sdcard partitions since we can't modify them
@@ -107,6 +147,11 @@ namespace FireParted
             AdbCommand.ExecutePartitionCommand(Constants.PARTED_REMOVE + Constants.DATA_PART_NUMBER, _parent);
         }
 
+        /// <summary>
+        /// Resizes the sdcard partition (this should be non-destructive to the data)
+        /// </summary>
+        /// <param name="begin">Where the new partition will start</param>
+        /// <param name="end">Where the new partition will end</param>
         public void ResizeSdcard(int begin, int end)
         {
             _parent.WriteToConsole("Resizing /sdcard partition (begin=" + begin + ", end=" + end + ")...\n");
@@ -116,6 +161,11 @@ namespace FireParted
             _parent.WriteToConsole("Sdcard resized successfully.\n\n");
         }
 
+        /// <summary>
+        /// Recreates the /data partition
+        /// </summary>
+        /// <param name="begin">Where the new partition will start</param>
+        /// <param name="end">Where the new partition will end</param>
         public void RepartitionData(int begin, int end)
         {
             _parent.WriteToConsole("Repartitioning /data (begin=" + begin + ", end=" + end + ")...\n");
@@ -133,6 +183,11 @@ namespace FireParted
             _parent.WriteToConsole("Data repartitioning complete.\n\n");
         }
 
+        /// <summary>
+        /// Recreates the /cache partition
+        /// </summary>
+        /// <param name="begin">Where the partition will start</param>
+        /// <param name="end">Where the partition will end</param>
         public void RepartitionCache(int begin, int end)
         {
             _parent.WriteToConsole("Repartitioning /cache (begin=" + begin + ", end=" + end + ")...\n");
@@ -150,6 +205,11 @@ namespace FireParted
             _parent.WriteToConsole("Cache repartitioning complete.\n\n");
         }
 
+        /// <summary>
+        /// Parses the device's partition table data
+        /// </summary>
+        /// <param name="PartInfo">The partition table string</param>
+        /// <param name="PartTable">A dictionary that maps partition names to their sizes (in MB)</param>
         private void ProcessPartitionTable(string PartInfo, Dictionary<string, uint> PartTable)
         {
             Match dataMatch = Constants.DATA_REGEX.Match(PartInfo);
@@ -164,6 +224,12 @@ namespace FireParted
             PartTable.Add("media", UInt32.Parse(sdcardMatch.Groups[1].Value));
         }
 
+        /// <summary>
+        /// Parses the output of the 'du' command
+        /// </summary>
+        /// <param name="dataUsage">The output from 'du /data'</param>
+        /// <param name="sdUsage">The output from 'du /sdcard'</param>
+        /// <param name="usage">A dictionary that maps partition names to their usage (in MB)</param>
         private void ProcessUsageData(string dataUsage, string sdUsage, Dictionary<string, int> usage)
         {
             Match dataMatch = Constants.USAGE_REGEX.Match(dataUsage);

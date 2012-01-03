@@ -35,6 +35,12 @@ namespace FireParted
             _console = Console;
         }
 
+        /// <summary>
+        /// Starts the ADB daemon
+        /// </summary>
+        /// <returns>
+        /// Always returns null; the callee is expecting a string, but we have nothing important to return.
+        /// </returns>
         public static string StartServer()
         {
             KillAdbServer();
@@ -45,12 +51,22 @@ namespace FireParted
             return null;
         }
 
+        /// <summary>
+        /// Reboots the device (issues 'adb reboot')
+        /// </summary>
         public static void Reboot()
         {
             Process proc = Process.Start(CreateAdbStartInfo("reboot"));
             proc.WaitForExit();
         }
 
+        /// <summary>
+        /// Executes an 'adb shell' command.
+        /// </summary>
+        /// <param name="Command">The command to execute ('shell' will be prepended)</param>
+        /// <returns>
+        /// The output of the command (stderr on failure, stdout on success)
+        /// </returns>
         public static string ExecuteShellCommand(string Command)
         {
             string output;
@@ -65,6 +81,11 @@ namespace FireParted
             return output;
         }
 
+        /// <summary>
+        /// Executes a partitioning command, throwing a PartitionException if an error occurs
+        /// </summary>
+        /// <param name="Command">The command to execute</param>
+        /// <param name="console">A fmMain object to write output to</param>
         public static void ExecutePartitionCommand(string Command, fmMain console)
         {
             string output = null;
@@ -85,6 +106,13 @@ namespace FireParted
                 console.WriteToConsole(output.Replace("\r", ""));
         }
 
+        /// <summary>
+        /// Executes an adb command
+        /// </summary>
+        /// <param name="Command">The command to execute</param>
+        /// <returns>
+        /// The output of the command (stderr on failure, stdout on success)
+        /// </returns>
         public static string ExecuteCommand(string Command)
         {
             string output;
@@ -99,6 +127,14 @@ namespace FireParted
             return output;
         }
 
+        /// <summary>
+        /// Executes an 'adb shell' command, writing output asynchonously to the console window.
+        /// </summary>
+        /// <param name="Command">The command to execute ('shell' will be prepended)</param>
+        /// <param name="Console">The fmMain object to write output to</param>
+        /// <returns>
+        /// The output of the command (stderr on failure, stdout on success)
+        /// </returns>
         public static string ExecuteShellCommandWithOutput(string Command, fmMain Console)
         {
             string output;
@@ -121,6 +157,14 @@ namespace FireParted
 
             return output;
         }
+
+        /// <summary>
+        /// Creates a ProcessStartInfo object for an adb command
+        /// </summary>
+        /// <param name="Command">The command string to be executed</param>
+        /// <returns>
+        /// A ProcessStartInfo object for the providec command string
+        /// </returns>
         private static ProcessStartInfo CreateAdbStartInfo(string Command)
         {
             ProcessStartInfo info = new ProcessStartInfo(@".\lib\adb.exe", Command);
@@ -132,6 +176,9 @@ namespace FireParted
             return info;
         }
 
+        /// <summary>
+        /// Finds all running adb processes and terminates them
+        /// </summary>
         public static void KillAdbServer()
         {
             Process[] adbProc = Process.GetProcessesByName("adb");

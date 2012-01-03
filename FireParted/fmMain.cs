@@ -55,6 +55,9 @@ namespace FireParted
         [DllImport("uxtheme.dll")]
         public static extern int SetWindowTheme(IntPtr hWnd, String pszSubAppName, String pszSubIdList);
 
+        /// <summary>
+        /// Constructor; Initializes objects, disables all buttons and restarts ADB
+        /// </summary>
         public fmMain()
         {
             InitializeComponent();
@@ -65,10 +68,22 @@ namespace FireParted
             SetWindowTheme(progDataUsage.Handle, " ", " ");
             SetWindowTheme(progSdUsage.Handle, " ", " ");
 
+            if (!File.Exists("nowarningdialog"))
+            {
+                fmWarningDialog warning = new fmWarningDialog();
+                warning.ShowDialog(this);
+            }
+
+            this.Show();
+
             Thread t = new Thread(new ThreadStart(RestartAdb));
             t.Start();
         }
 
+        /// <summary>
+        /// Writes a string to the output console.
+        /// </summary>
+        /// <param name="Text">The string to write to the console</param>
         public void WriteToConsole(string Text)
         {
             if (rtbConsole.InvokeRequired)
@@ -84,6 +99,9 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Updates all GUI controls (numeric controls, labels, progress meters)
+        /// </summary>
         private void UpdateDisplay()
         {
             if (rtbConsole.InvokeRequired)
@@ -113,6 +131,9 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Reads the partition table from the device, and sets the values of the associated private fields.
+        /// </summary>
         private void ReadPartitions()
         {
             WriteToConsole("Reading partition table...\n");
@@ -148,6 +169,9 @@ namespace FireParted
             EnableButtons();
         }
 
+        /// <summary>
+        /// Creates a backup of the /data partition to a local archive file.
+        /// </summary>
         private void BackupData()
         {
             WriteToConsole("Creating archive of /data partition at /data/data.tgz...\n");
@@ -191,6 +215,9 @@ namespace FireParted
             EnableButtons();
         }
 
+        /// <summary>
+        /// Restores a local data backup to the device's /data partition.
+        /// </summary>
         private void RestoreData()
         {
             DisableButtons();
@@ -228,6 +255,9 @@ namespace FireParted
             EnableButtons();
         }
 
+        /// <summary>
+        /// Removes a data.tgz archive from the device.
+        /// </summary>
         private void RemoveRemoteArchive()
         {
             WriteToConsole("Deleting archive from /sdcard...");
@@ -235,6 +265,9 @@ namespace FireParted
             WriteToConsole("Done.\n");
         }
 
+        /// <summary>
+        /// Restarts the ADB daemon.
+        /// </summary>
         private void RestartAdb()
         {
             WriteToConsole("Restarting adb server, please wait (this should only take a few seconds)...\n");
@@ -252,6 +285,9 @@ namespace FireParted
             readThread.Start();
         }
         
+        /// <summary>
+        /// Enables the numeric GUI controls.
+        /// </summary>
         private void EnableSpinners()
         {
             if (rtbConsole.InvokeRequired)
@@ -268,6 +304,9 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Disables the numeric GUI controls.
+        /// </summary>
         private void DisableSpinners()
         {
             if (rtbConsole.InvokeRequired)
@@ -284,6 +323,9 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Enables the GUI's buttons.
+        /// </summary>
         private void EnableButtons()
         {
             if (btnBackupData.InvokeRequired)
@@ -309,6 +351,9 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Disables the GUI's buttons.
+        /// </summary>
         private void DisableButtons()
         {
             if (btnBackupData.InvokeRequired)
@@ -328,6 +373,18 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Runs validation on the value entered into a numeric control.
+        /// </summary>
+        /// <param name="Spinner">The spinner whose value was changes</param>
+        /// <param name="Value">The newly entered value</param>
+        /// <param name="MinValue">he minimum allowed value for the current spinner</param>
+        /// <remarks>
+        /// This is just a basic sanity check to ensure that the values selected don't try to create
+        /// an impossible stuation. It will check to make sure the maximum allowable space of all three
+        /// combined partitions is not exceeded, and will prevent the partition from shrinking to be
+        /// smaller than its current contents.
+        /// </remarks>
         private void ValidateValues(NumericUpDown Spinner, ref uint Value, int MinValue)
         {
             int diff = (int)Spinner.Value - (int)Value;
@@ -362,6 +419,9 @@ namespace FireParted
             UpdateDisplay();
         }
 
+        /// <summary>
+        /// Performs the device repartition.
+        /// </summary>
         private void RepartitionDevice()
         {
             DisableButtons();
@@ -391,6 +451,12 @@ namespace FireParted
             }
         }
 
+        /// <summary>
+        /// Calculates the beginning and ending values for each partition based on their entered sizes.
+        /// </summary>
+        /// <returns>
+        /// A dictionary of partitions to values.
+        /// </returns>
         private Dictionary<string, int> CalculateBeginEndValues()
         {
             Dictionary<string, int> values = new Dictionary<string, int>();
@@ -498,7 +564,7 @@ namespace FireParted
 
             if (result == DialogResult.Yes)
             {
-                WriteToConsole("Rebooting device...");
+                WriteToConsole("Rebooting device...\n");
 
                 _partitionTableRead = false;
                 DisableButtons();
