@@ -77,7 +77,7 @@ namespace FireParted
             // rtbConsole
             // 
             this.rtbConsole.BackColor = System.Drawing.Color.White;
-            this.rtbConsole.Font = new System.Drawing.Font("DejaVu Sans Mono", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtbConsole.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbConsole.Location = new System.Drawing.Point(214, 11);
             this.rtbConsole.Name = "rtbConsole";
             this.rtbConsole.ReadOnly = true;
