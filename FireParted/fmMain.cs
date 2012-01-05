@@ -146,6 +146,7 @@ namespace FireParted
             if (partitionTable == null || partitionTable.Count == 0)
             {
                 WriteToConsole("Error: Unable to read partition table from device!\n");
+                EnableButtons();
                 return;
             }
 
