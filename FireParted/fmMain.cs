@@ -41,6 +41,8 @@ namespace FireParted
         private uint _sdcardSize;
         private uint _cacheSize;
         private uint _availableSpace;
+        private uint _dataStart;
+        private uint _deviceEnd;
 
         private int _dataUsed;
         private int _sdcardUsed;
@@ -116,7 +118,7 @@ namespace FireParted
                 numCache.Value = (decimal)_cacheSize;
                 numSdcard.Value = (decimal)_sdcardSize;
 
-                _availableSpace = Constants.TOTAL_SPACE - _dataSize - _cacheSize - _sdcardSize;
+                _availableSpace = _deviceEnd -_dataStart - _dataSize - _cacheSize - _sdcardSize;
 
                 lblDataUsage.Text = _dataUsed.ToString() + "MB / " + _dataSize.ToString() + "MB";
                 lblSdUsage.Text = _sdcardUsed.ToString() + "MB / " + _sdcardSize.ToString() + "MB";
@@ -150,6 +152,8 @@ namespace FireParted
                 return;
             }
 
+            _deviceEnd = partitionTable["deviceend"];
+            _dataStart = partitionTable["datastart"];
             _dataSize = partitionTable["data"];
             _cacheSize = partitionTable["cache"];
             _sdcardSize = partitionTable["media"];

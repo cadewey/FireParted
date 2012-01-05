@@ -79,9 +79,10 @@ namespace FireParted
         public static readonly string PUSH_DATA_ARCHIVE = "push data.tgz /data";
 
         //Regular expressions for parsing parted's print command
-        public static Regex DATA_REGEX = new Regex(@"10\s+\d+MB\s+\d+MB\s+(\d+)MB(?:\s|\w)+?userdata");
+        public static Regex DATA_REGEX = new Regex(@"10\s+(\d+)MB\s+\d+MB\s+(\d+)MB(?:\s|\w)+?userdata");
         public static Regex CACHE_REGEX = new Regex(@"11\s+\d+MB\s+\d+MB\s+(\d+)MB(?:\s|\w)+?cache");
         public static Regex SDCARD_REGEX = new Regex(@"12\s+\d+MB\s+\d+MB\s+(\d+)MB(?:\s|\w)+?media");
         public static Regex USAGE_REGEX = new Regex(@"(\d+)\s+total");
+        public static Regex DEVICE_SIZE_REGEX = new Regex(@"Disk /dev/block/mmcblk0: (\d+)MB");
     }
 }

@@ -215,11 +215,15 @@ namespace FireParted
             Match dataMatch = Constants.DATA_REGEX.Match(PartInfo);
             Match cacheMatch = Constants.CACHE_REGEX.Match(PartInfo);
             Match sdcardMatch = Constants.SDCARD_REGEX.Match(PartInfo);
+            Match totalSizeMatch = Constants.DEVICE_SIZE_REGEX.Match(PartInfo);
 
-            if (dataMatch.Captures.Count == 0 || cacheMatch.Captures.Count == 0 || sdcardMatch.Captures.Count == 0)
+            if (dataMatch.Captures.Count == 0 || cacheMatch.Captures.Count == 0 
+                || sdcardMatch.Captures.Count == 0 || totalSizeMatch.Captures.Count == 0)
                 return;
 
-            PartTable.Add("data", UInt32.Parse(dataMatch.Groups[1].Value));
+            PartTable.Add("deviceend", UInt32.Parse(totalSizeMatch.Groups[1].Value));
+            PartTable.Add("datastart", UInt32.Parse(dataMatch.Groups[1].Value));
+            PartTable.Add("data", UInt32.Parse(dataMatch.Groups[2].Value));
             PartTable.Add("cache", UInt32.Parse(cacheMatch.Groups[1].Value));
             PartTable.Add("media", UInt32.Parse(sdcardMatch.Groups[1].Value));
         }
