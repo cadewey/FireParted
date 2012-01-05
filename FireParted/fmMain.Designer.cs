@@ -355,7 +355,7 @@ namespace FireParted
             this.Controls.Add(this.numData);
             this.Controls.Add(this.rtbConsole);
             this.Name = "fmMain";
-            this.Text = "FireParted v1.0.1";
+            this.Text = "FireParted v1.1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.fmMain_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.numData)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSdcard)).EndInit();
